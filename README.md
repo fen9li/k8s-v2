@@ -54,6 +54,19 @@ feng@ubuntu:~/k8s-v2$
 ```
 
 ## dashboard
+* start minikube
+```
+feng@ubuntu:~$ minikube start
+😄  minikube v1.2.0 on linux (amd64)
+💡  Tip: Use 'minikube start -p <name>' to create a new cluster, or 'minikube delete' to delete this one.
+🔄  Restarting existing virtualbox VM for "minikube" ...
+⌛  Waiting for SSH access ...
+🐳  Configuring environment for Kubernetes v1.15.0 on Docker 18.09.6
+🔄  Relaunching Kubernetes v1.15.0 using kubeadm ... 
+⌛  Verifying: apiserver proxy etcd scheduler controller dns
+🏄  Done! kubectl is now configured to use "minikube"
+feng@ubuntu:~$ 
+```
 
 * check if dashboard addons enable
 ```
