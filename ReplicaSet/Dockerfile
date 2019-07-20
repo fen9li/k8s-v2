@@ -1,0 +1,3 @@
+FROM node:7
+ADD app-v1.js /app.js
+ENTRYPOINT ["node", "app.js"]
