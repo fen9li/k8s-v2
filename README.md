@@ -599,7 +599,244 @@ feng@ubuntu:~/k8s-v2$
 ```
 
 ## appendix
-* ssh to minikube node
+* kubectl commands cheatsheet
+
+```
+kubectl create -f koala.yaml --save-config
+kubectl apply -f koala.yaml
+
+kubectl get pods koala -o wide
+kubectl get pods koala -o json
+
+kubectl port-forward koala 8080:8080 (test by using 'curl http://localhost:8888' command)
+kubectl logs koala
+
+kubectl label pods koala creation_method=manual
+kubectl label pods koala-v2 env=debug --overwrite
+
+kubectl get pods --show-labels
+kubectl get pods -L creation_method,env
+kubectl get pods -l env
+kubectl get pods -l '!env'
+kubectl get pods -l creation_method=manual
+```
+
+* if you need to find any object reference for your k8s
+```
+feng@ubuntu:~/k8s-v2$ k explain pods.spec.containers
+KIND:     Pod
+VERSION:  v1
+
+RESOURCE: containers <[]Object>
+
+DESCRIPTION:
+     List of containers belonging to the pod. Containers cannot currently be
+     added or removed. There must be at least one container in a Pod. Cannot be
+     updated.
+
+     A single application container that you want to run within a pod.
+
+FIELDS:
+   args <[]string>
+     Arguments to the entrypoint. The docker image's CMD is used if this is not
+     provided. Variable references $(VAR_NAME) are expanded using the
+     container's environment. If a variable cannot be resolved, the reference in
+     the input string will be unchanged. The $(VAR_NAME) syntax can be escaped
+     with a double $$, ie: $$(VAR_NAME). Escaped references will never be
+     expanded, regardless of whether the variable exists or not. Cannot be
+     updated. More info:
+     https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+
+   command      <[]string>
+     Entrypoint array. Not executed within a shell. The docker image's
+     ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME)
+     are expanded using the container's environment. If a variable cannot be
+     resolved, the reference in the input string will be unchanged. The
+     $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME).
+     Escaped references will never be expanded, regardless of whether the
+     variable exists or not. Cannot be updated. More info:
+     https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+
+   env  <[]Object>
+     List of environment variables to set in the container. Cannot be updated.
+
+   envFrom      <[]Object>
+     List of sources to populate environment variables in the container. The
+     keys defined within a source must be a C_IDENTIFIER. All invalid keys will
+     be reported as an event when the container is starting. When a key exists
+     in multiple sources, the value associated with the last source will take
+     precedence. Values defined by an Env with a duplicate key will take
+     precedence. Cannot be updated.
+
+   image        <string>
+     Docker image name. More info:
+     https://kubernetes.io/docs/concepts/containers/images This field is
+     optional to allow higher level config management to default or override
+     container images in workload controllers like Deployments and StatefulSets.
+
+   imagePullPolicy      <string>
+     Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always
+     if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated.
+     More info:
+     https://kubernetes.io/docs/concepts/containers/images#updating-images
+
+   lifecycle    <Object>
+     Actions that the management system should take in response to container
+     lifecycle events. Cannot be updated.
+
+   livenessProbe        <Object>
+     Periodic probe of container liveness. Container will be restarted if the
+     probe fails. Cannot be updated. More info:
+     https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+
+   name <string> -required-
+     Name of the container specified as a DNS_LABEL. Each container in a pod
+     must have a unique name (DNS_LABEL). Cannot be updated.
+
+   ports        <[]Object>
+     List of ports to expose from the container. Exposing a port here gives the
+     system additional information about the network connections a container
+     uses, but is primarily informational. Not specifying a port here DOES NOT
+     prevent that port from being exposed. Any port which is listening on the
+     default "0.0.0.0" address inside a container will be accessible from the
+     network. Cannot be updated.
+
+   readinessProbe       <Object>
+     Periodic probe of container service readiness. Container will be removed
+     from service endpoints if the probe fails. Cannot be updated. More info:
+     https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+
+   resources    <Object>
+     Compute Resources required by this container. Cannot be updated. More info:
+     https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+
+   securityContext      <Object>
+     Security options the pod should run with. More info:
+     https://kubernetes.io/docs/concepts/policy/security-context/ More info:
+     https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+
+   stdin        <boolean>
+     Whether this container should allocate a buffer for stdin in the container
+     runtime. If this is not set, reads from stdin in the container will always
+     result in EOF. Default is false.
+
+   stdinOnce    <boolean>
+     Whether the container runtime should close the stdin channel after it has
+     been opened by a single attach. When stdin is true the stdin stream will
+     remain open across multiple attach sessions. If stdinOnce is set to true,
+     stdin is opened on container start, is empty until the first client
+     attaches to stdin, and then remains open and accepts data until the client
+     disconnects, at which time stdin is closed and remains closed until the
+     container is restarted. If this flag is false, a container processes that
+     reads from stdin will never receive an EOF. Default is false
+
+   terminationMessagePath       <string>
+     Optional: Path at which the file to which the container's termination
+     message will be written is mounted into the container's filesystem. Message
+     written is intended to be brief final status, such as an assertion failure
+     message. Will be truncated by the node if greater than 4096 bytes. The
+     total message length across all containers will be limited to 12kb.
+     Defaults to /dev/termination-log. Cannot be updated.
+
+   terminationMessagePolicy     <string>
+     Indicate how the termination message should be populated. File will use the
+     contents of terminationMessagePath to populate the container status message
+     on both success and failure. FallbackToLogsOnError will use the last chunk
+     of container log output if the termination message file is empty and the
+     container exited with an error. The log output is limited to 2048 bytes or
+     80 lines, whichever is smaller. Defaults to File. Cannot be updated.
+
+   tty  <boolean>
+     Whether this container should allocate a TTY for itself, also requires
+     'stdin' to be true. Default is false.
+
+   volumeDevices        <[]Object>
+     volumeDevices is the list of block devices to be used by the container.
+     This is a beta feature.
+
+   volumeMounts <[]Object>
+     Pod volumes to mount into the container's filesystem. Cannot be updated.
+
+   workingDir   <string>
+     Container's working directory. If not specified, the container runtime's
+     default will be used, which might be configured in the container image.
+     Cannot be updated.
+
+feng@ubuntu:~/k8s-v2$ 
+```
+
+* export existing object defination in yaml format
+```
+feng@ubuntu:~/k8s-v2$ k get ingress
+NAME    HOSTS               ADDRESS     PORTS     AGE
+koala   koala.example.com   10.0.2.15   80, 443   4h12m
+feng@ubuntu:~/k8s-v2$ 
+
+feng@ubuntu:~/k8s-v2/ReplicaSet$ k get ingress koala -o json
+{
+    "apiVersion": "extensions/v1beta1",
+    "kind": "Ingress",
+    "metadata": {
+        "annotations": {
+            "koala.example.com/creator": "feng li",
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"networking.k8s.io/v1beta1\",\"kind\":\"Ingress\",\"metadata\":{\"annotations\":{\"koala.example.com/creator\":\"feng li\",\"nginx.ingress.kubernetes.io/rewrite-target\":\"/\"},\"name\":\"koala\",\"namespace\":\"default\"},\"spec\":{\"rules\":[{\"host\":\"koala.example.com\",\"http\":{\"paths\":[{\"backend\":{\"serviceName\":\"koala-nodeport\",\"servicePort\":8080},\"path\":\"/\"}]}}],\"tls\":[{\"hosts\":[\"koala.example.com\"],\"secretName\":\"tls-secret\"}]}}\n",
+            "nginx.ingress.kubernetes.io/rewrite-target": "/"
+        },
+        "creationTimestamp": "2019-07-20T10:20:24Z",
+        "generation": 2,
+        "name": "koala",
+        "namespace": "default",
+        "resourceVersion": "272119",
+        "selfLink": "/apis/extensions/v1beta1/namespaces/default/ingresses/koala",
+        "uid": "e1ccdc82-1476-47f3-9beb-0bfd519227a7"
+    },
+    "spec": {
+        "rules": [
+            {
+                "host": "koala.example.com",
+                "http": {
+                    "paths": [
+                        {
+                            "backend": {
+                                "serviceName": "koala-nodeport",
+                                "servicePort": 8080
+                            },
+                            "path": "/"
+                        }
+                    ]
+                }
+            }
+        ],
+        "tls": [
+            {
+                "hosts": [
+                    "koala.example.com"
+                ],
+                "secretName": "tls-secret"
+            }
+        ]
+    },
+    "status": {
+        "loadBalancer": {
+            "ingress": [
+                {
+                    "ip": "10.0.2.15"
+                }
+            ]
+        }
+    }
+}
+feng@ubuntu:~/k8s-v2/ReplicaSet$ k get ingress koala -o json | jq '.metadata.annotations'
+{
+  "koala.example.com/creator": "feng li",
+  "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"networking.k8s.io/v1beta1\",\"kind\":\"Ingress\",\"metadata\":{\"annotations\":{\"koala.example.com/creator\":\"feng li\",\"nginx.ingress.kubernetes.io/rewrite-target\":\"/\"},\"name\":\"koala\",\"namespace\":\"default\"},\"spec\":{\"rules\":[{\"host\":\"koala.example.com\",\"http\":{\"paths\":[{\"backend\":{\"serviceName\":\"koala-nodeport\",\"servicePort\":8080},\"path\":\"/\"}]}}],\"tls\":[{\"hosts\":[\"koala.example.com\"],\"secretName\":\"tls-secret\"}]}}\n",
+  "nginx.ingress.kubernetes.io/rewrite-target": "/"
+}
+feng@ubuntu:~/k8s-v2/ReplicaSet$  
+```
+
+* ssh to minikube node    
+
 ```
 feng@ubuntu:~/k8s-v2$ minikube ssh
                          _             _            
@@ -621,4 +858,118 @@ tutum/curl                                                       latest         
 $ exit
 logout
 feng@ubuntu:~/k8s-v2$ 
+```
+
+* setup kubectl command autocomplete 
+> [THIS DOES NOT WORK IN UBUNTU 19.04!](https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-on-linux)
+
+```
+feng@ubuntu:~/k8s-v2$ echo $SHELL
+/bin/bash
+feng@ubuntu:~/k8s-v2$ 
+feng@ubuntu:~/k8s-v2$ type _init_completion
+_init_completion is a function
+_init_completion () 
+{ 
+    local exclude= flag outx errx inx OPTIND=1;
+    while getopts "n:e:o:i:s" flag "$@"; do
+        case $flag in 
+            n)
+                exclude+=$OPTARG
+            ;;
+            e)
+                errx=$OPTARG
+            ;;
+            o)
+                outx=$OPTARG
+            ;;
+            i)
+                inx=$OPTARG
+            ;;
+            s)
+                split=false;
+                exclude+==
+            ;;
+        esac;
+    done;
+    COMPREPLY=();
+    local redir="@(?([0-9])<|?([0-9&])>?(>)|>&)";
+    _get_comp_words_by_ref -n "$exclude<>&" cur prev words cword;
+    _variables && return 1;
+    if [[ $cur == $redir* || $prev == $redir ]]; then
+        local xspec;
+        case $cur in 
+            2'>'*)
+                xspec=$errx
+            ;;
+            *'>'*)
+                xspec=$outx
+            ;;
+            *'<'*)
+                xspec=$inx
+            ;;
+            *)
+                case $prev in 
+                    2'>'*)
+                        xspec=$errx
+                    ;;
+                    *'>'*)
+                        xspec=$outx
+                    ;;
+                    *'<'*)
+                        xspec=$inx
+                    ;;
+                esac
+            ;;
+        esac;
+        cur="${cur##$redir}";
+        _filedir $xspec;
+        return 1;
+    fi;
+    local i skip;
+    for ((i=1; i < ${#words[@]}; 1))
+    do
+        if [[ ${words[i]} == $redir* ]]; then
+            [[ ${words[i]} == $redir ]] && skip=2 || skip=1;
+            words=("${words[@]:0:i}" "${words[@]:i+skip}");
+            [[ $i -le $cword ]] && cword=$(( cword - skip ));
+        else
+            i=$(( ++i ));
+        fi;
+    done;
+    [[ $cword -le 0 ]] && return 1;
+    prev=${words[cword-1]};
+    [[ -n ${split-} ]] && _split_longopt && split=true;
+    return 0
+}
+feng@ubuntu:~/k8s-v2$ 
+feng@ubuntu:~/k8s-v2$ ll /usr/share/bash-completion/bash_completion 
+-rw-r--r-- 1 root root 72566 Apr  2  2018 /usr/share/bash-completion/bash_completion
+feng@ubuntu:~/k8s-v2$ 
+feng@ubuntu:~/k8s-v2$ ll /etc/bash_completion.d/kubectl 
+-rw-r--r-- 1 root root 273831 Jul 16 19:34 /etc/bash_completion.d/kubectl
+feng@ubuntu:~/k8s-v2$ 
+
+feng@ubuntu:~$ cp .bashrc .bashrc.orig
+feng@ubuntu:~$ vim .bashrc
+feng@ubuntu:~$ diff .bashrc .bashrc.orig
+111,117c111,117
+< #if ! shopt -oq posix; then
+< #  if [ -f /usr/share/bash-completion/bash_completion ]; then
+< #    . /usr/share/bash-completion/bash_completion
+< #  elif [ -f /etc/bash_completion ]; then
+< #    . /etc/bash_completion
+< #  fi
+< #fi
+---
+> if ! shopt -oq posix; then
+>   if [ -f /usr/share/bash-completion/bash_completion ]; then
+>     . /usr/share/bash-completion/bash_completion
+>   elif [ -f /etc/bash_completion ]; then
+>     . /etc/bash_completion
+>   fi
+> fi
+feng@ubuntu:~$ 
+
+
 ```
