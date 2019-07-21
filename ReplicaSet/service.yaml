@@ -16,7 +16,7 @@ spec:
       - name: koala
         image: fen9li/koala:v1
       - name: kubectl-proxy
-        image: fen9li/kubectl-proxy:latest  
+        image: fen9li/kubectl-proxy:v1.0.0  
 ---
 apiVersion: v1
 kind: Service

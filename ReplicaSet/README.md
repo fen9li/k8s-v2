@@ -528,3 +528,109 @@ feng@ubuntu:~/k8s-v2/ReplicaSet$
 ```
 
 ![test_ingress_with_tls](images/test_ingress_with_tls.png)
+
+## make koala container access apiserver via kubectl-proxy container
+```
+feng@ubuntu:~/k8s-v2/ReplicaSet$ k create -f service.yaml --save-config
+replicaset.apps/koala created
+service/koala-nodeport created
+ingress.networking.k8s.io/koala created
+feng@ubuntu:~/k8s-v2/ReplicaSet$ k get all
+NAME              READY   STATUS    RESTARTS   AGE
+pod/koala-ggxdx   2/2     Running   0          7s
+pod/koala-wqhph   2/2     Running   0          7s
+pod/koala-x4m68   2/2     Running   0          7s
+
+NAME                     TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+service/koala-nodeport   NodePort    10.98.71.235   <none>        8080:31399/TCP   7s
+service/kubernetes       ClusterIP   10.96.0.1      <none>        443/TCP          5d7h
+
+NAME                    DESIRED   CURRENT   READY   AGE
+replicaset.apps/koala   3         3         3       7s
+
+feng@ubuntu:~/k8s-v2/ReplicaSet$ 
+feng@ubuntu:~/k8s-v2/ReplicaSet$ k exec -it koala-ggxdx --container koala -- bash
+root@koala-ggxdx:/# curl http://localhost:8001
+{
+  "paths": [
+    "/api",
+    "/api/v1",
+    "/apis",
+    "/apis/",
+    "/apis/admissionregistration.k8s.io",
+    "/apis/admissionregistration.k8s.io/v1beta1",
+    "/apis/apiextensions.k8s.io",
+    "/apis/apiextensions.k8s.io/v1beta1",
+    "/apis/apiregistration.k8s.io",
+    "/apis/apiregistration.k8s.io/v1",
+    "/apis/apiregistration.k8s.io/v1beta1",
+    "/apis/apps",
+    "/apis/apps/v1",
+    "/apis/apps/v1beta1",
+    "/apis/apps/v1beta2",
+    "/apis/authentication.k8s.io",
+    "/apis/authentication.k8s.io/v1",
+    "/apis/authentication.k8s.io/v1beta1",
+    "/apis/authorization.k8s.io",
+    "/apis/authorization.k8s.io/v1",
+    "/apis/authorization.k8s.io/v1beta1",
+    "/apis/autoscaling",
+    "/apis/autoscaling/v1",
+    "/apis/autoscaling/v2beta1",
+    "/apis/autoscaling/v2beta2",
+    "/apis/batch",
+    "/apis/batch/v1",
+    "/apis/batch/v1beta1",
+    "/apis/certificates.k8s.io",
+    "/apis/certificates.k8s.io/v1beta1",
+    "/apis/coordination.k8s.io",
+    "/apis/coordination.k8s.io/v1",
+    "/apis/coordination.k8s.io/v1beta1",
+    "/apis/events.k8s.io",
+    "/apis/events.k8s.io/v1beta1",
+    "/apis/extensions",
+    "/apis/extensions/v1beta1",
+    "/apis/networking.k8s.io",
+    "/apis/networking.k8s.io/v1",
+    "/apis/networking.k8s.io/v1beta1",
+    "/apis/node.k8s.io",
+    "/apis/node.k8s.io/v1beta1",
+    "/apis/policy",
+    "/apis/policy/v1beta1",
+    "/apis/rbac.authorization.k8s.io",
+    "/apis/rbac.authorization.k8s.io/v1",
+    "/apis/rbac.authorization.k8s.io/v1beta1",
+    "/apis/scheduling.k8s.io",
+    "/apis/scheduling.k8s.io/v1",
+    "/apis/scheduling.k8s.io/v1beta1",
+    "/apis/storage.k8s.io",
+    "/apis/storage.k8s.io/v1",
+    "/apis/storage.k8s.io/v1beta1",
+    "/healthz",
+    "/healthz/autoregister-completion",
+    "/healthz/etcd",
+    "/healthz/log",
+    "/healthz/ping",
+    "/healthz/poststarthook/apiservice-openapi-controller",
+    "/healthz/poststarthook/apiservice-registration-controller",
+    "/healthz/poststarthook/apiservice-status-available-controller",
+    "/healthz/poststarthook/bootstrap-controller",
+    "/healthz/poststarthook/ca-registration",
+    "/healthz/poststarthook/crd-informer-synced",
+    "/healthz/poststarthook/generic-apiserver-start-informers",
+    "/healthz/poststarthook/kube-apiserver-autoregistration",
+    "/healthz/poststarthook/rbac/bootstrap-roles",
+    "/healthz/poststarthook/scheduling/bootstrap-system-priority-classes",
+    "/healthz/poststarthook/start-apiextensions-controllers",
+    "/healthz/poststarthook/start-apiextensions-informers",
+    "/healthz/poststarthook/start-kube-aggregator-informers",
+    "/healthz/poststarthook/start-kube-apiserver-admission-initializer",
+    "/logs",
+    "/metrics",
+    "/openapi/v2",
+    "/version"
+  ]
+}root@koala-ggxdx:/# exit
+exit
+feng@ubuntu:~/k8s-v2/ReplicaSet$ 
+```
