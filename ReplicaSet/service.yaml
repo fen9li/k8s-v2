@@ -14,7 +14,9 @@ spec:
     spec:
       containers:
       - name: koala
-        image: fen9li/koala:v1  
+        image: fen9li/koala:v1
+      - name: kubectl-proxy
+        image: fen9li/kubectl-proxy:latest  
 ---
 apiVersion: v1
 kind: Service
@@ -25,7 +27,7 @@ spec:
   ports:
   - port: 8080
     targetPort: 8080
-    nodePort: 30123
+    # nodePort: 30123
   selector:
     app: koala
 ---

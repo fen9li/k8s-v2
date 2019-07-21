@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: curl
+spec:
+  containers:
+  - name: curl
+    image: tutum/curl
+    command: ["sleep", "9999999"]
+  - name: alpine
+    image: fen9li/kubectl-proxy:v1.0.0
+    
