@@ -607,6 +607,7 @@ kubectl apply -f koala.yaml
 
 kubectl get pods koala -o wide
 kubectl get pods koala -o json
+kubectl describe pods koala
 
 kubectl port-forward koala 8080:8080 (test by using 'curl http://localhost:8888' command)
 kubectl logs koala
@@ -619,6 +620,17 @@ kubectl get pods -L creation_method,env
 kubectl get pods -l env
 kubectl get pods -l '!env'
 kubectl get pods -l creation_method=manual
+kubectl delete pods -l creation_method=manual
+
+```
+
+* Disabling role-based access control (RBAC)
+If you’re using a Kubernetes cluster with RBAC enabled, the service account may not be authorized to access (parts of) the API server. The simplest way to allow you to query the API server is to work around RBAC by running the following command. This gives all service accounts (we could also say all pods) cluster-admin privileges, allowing them to do whatever they want. Obviously, doing this is dangerous and should never be done on production clusters. For test purposes, it’s fine.
+
+```
+feng@ubuntu:~/k8s$ kubectl create clusterrolebinding permissive-binding --clusterrole=cluster-admin --group=system:serviceaccounts
+clusterrolebinding.rbac.authorization.k8s.io/permissive-binding created
+feng@ubuntu:~/k8s$ 
 ```
 
 * if you need to find any object reference for your k8s
